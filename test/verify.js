@@ -26,18 +26,18 @@ test('verifyBlockChain', t => {
   // Loop through the whole block array with map function
   blockchain.getChain().map((block, index, blockchain) => {
     // Get the current block's id information 
-    const currentBlock = block.getIds()
+    const currentBlock = block.getHash()
 
     // If the current block's parent id is not null
-    if (currentBlock.parentId !== null) {
+    if (currentBlock.previousHash !== null) {
       // Get the previous block's information
-      const prevBlock = blockchain[index - 1].getIds()
+      const prevBlock = blockchain[index - 1].getHash()
 
       // Self explanatory
-      t.deepEqual(currentBlock.parentId, prevBlock.id)
+      t.deepEqual(currentBlock.previousHash, prevBlock.hash)
     } else {
       // If parent id is null
-      t.deepEqual(currentBlock.parentId, null)
+      t.deepEqual(currentBlock.previousHash, null)
     }
   })
 })
