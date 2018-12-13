@@ -11,8 +11,10 @@ class Blockchain {
   // Else the current block is the first block, assign null to parentId
   addBlock (data) {
     if (this.block.length !== 0) {
-      const previousHash = this.lastBlock().getHash().currentHash
-      this.block.push(new Block(data, previousHash))
+      const previousHash = this.lastBlock().getHash().hash
+      const currentBlock = new Block(data, previousHash)
+      this.lastBlock().setNextBlock(currentBlock.getHash().hash)
+      this.block.push(currentBlock)
     } else {
       this.block.push(new Block(data, null))
     }
