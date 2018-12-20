@@ -11,6 +11,7 @@
     "name": "Howard-HS <hschang.2008@gmail.com>"
   },
   "dependencies": {
+    "dotenv": "^6.2.0",
     "uuid": "^3.3.2"
   },
   "devDependencies": {

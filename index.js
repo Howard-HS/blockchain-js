@@ -1,3 +1,9 @@
+const path = require('path')
+
+require('dotenv').config({
+  path: path.resolve('.env')
+})
+
 const Blockchain = require('./src/Blockchain')
 const blockchain = new Blockchain()
 

@@ -1,12 +1,11 @@
 const crypto = require('crypto')
-const key = 'm^b8@pV!GUjnHHuZsRG2dQKz2h76m4c2eC2Z2K2jqN6e^Wky8eeh8Cpj@vhsj7BB*RTHX!HvPYkqTuYNuGF@yfd@NU9PM%uZ!X@K'
 
 function computeDifficulty() {
   let nounce = 0
   const difficulty = Date.now().toString('8')
   while (true) {
     const hash = crypto.createHash('sha256')
-    const answer = hash.update(key + difficulty + nounce).digest('hex')
+    const answer = hash.update(process.env.HASH_KEY + difficulty + nounce).digest('hex')
 
     if (answer.startsWith('0000')) {
       return {
@@ -23,7 +22,7 @@ function mine(data) {
   const value = computeDifficulty()
   while (true) {
     const hash = crypto.createHash('sha256')
-    const answer = hash.update(key + JSON.stringify(data) + nounce).digest('hex')
+    const answer = hash.update(process.env.HASH_KEY + JSON.stringify(data) + nounce).digest('hex')
 
     if (answer < value.answer) {
       return {
@@ -38,7 +37,7 @@ function mine(data) {
 
 class Block {
   // Initialize a new block
-  constructor(data, previousBlock) {
+  constructor(data, previousBlock, difficulty) {
     const result = mine(data)
     this.time = Date.now()
     this.data = data
@@ -46,7 +45,7 @@ class Block {
     this.nextBlock = null
     this.hash = result.answer
     this.nounce = result.nounce
-    this.difficulty = result.difficulty
+    this.difficulty = difficulty
   }
 
   // Returns an object containing the block's id information
