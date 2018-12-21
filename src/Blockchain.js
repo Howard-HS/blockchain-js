@@ -1,4 +1,7 @@
 const Block = require('./Block')
+const Controller = require('./Controller')
+
+const controller = new Controller()
 
 class Blockchain {
   // Initialize a new array of blocks
@@ -10,6 +13,10 @@ class Blockchain {
   // Check if block array is not empty, if true then get the parentId from previous chain
   // Else the current block is the first block, assign null to parentId
   addBlock (data) {
+    // Pass chain to controller to compute current difficulty
+    controller.passChain(this.getChain())
+    const difficulty = controller.getDifficulty()
+
     if (this.block.length !== 0) {
       const previousBlock = this.lastBlock().getId()
       const currentBlock = new Block(data, previousBlock)

@@ -8,7 +8,7 @@ function mine(data) {
     const hash = crypto.createHash('sha256')
     const answer = `0x${hash.update(process.env.HASH_KEY + JSON.stringify(data) + nounce).digest('hex')}`
 
-    if (parseInt(answer) < 0x00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF) {
+    if (parseInt(answer) < 0x0FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF) {
       return {
         answer,
         nounce,
@@ -40,6 +40,10 @@ class Block {
 
   getId() {
     return this.id
+  }
+
+  getComputeTime() {
+    return this.elapsed
   }
 
   // Returns an object containing the block's data information
