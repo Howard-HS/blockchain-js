@@ -1,34 +1,18 @@
 const crypto = require('crypto')
-
-function computeDifficulty() {
-  let nounce = 0
-  const difficulty = Date.now().toString('8')
-  while (true) {
-    const hash = crypto.createHash('sha256')
-    const answer = hash.update(process.env.HASH_KEY + difficulty + nounce).digest('hex')
-
-    if (answer.startsWith('0000')) {
-      return {
-        answer,
-        difficulty
-      }
-    }
-    nounce++
-  }
-}
+const uuid = require("uuid/v4")
 
 function mine(data) {
   let nounce = 0
-  const value = computeDifficulty()
+  const timer = Date.now()
   while (true) {
     const hash = crypto.createHash('sha256')
-    const answer = hash.update(process.env.HASH_KEY + JSON.stringify(data) + nounce).digest('hex')
+    const answer = `0x${hash.update(process.env.HASH_KEY + JSON.stringify(data) + nounce).digest('hex')}`
 
-    if (answer < value.answer) {
+    if (parseInt(answer) < 0x00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF) {
       return {
         answer,
         nounce,
-        difficulty: value.difficulty
+        elapsed: Date.now() - timer
       }
     }
     nounce++
@@ -39,22 +23,23 @@ class Block {
   // Initialize a new block
   constructor(data, previousBlock, difficulty) {
     const result = mine(data)
+    this.id = uuid()
     this.time = Date.now()
     this.data = data
     this.previousBlock = previousBlock
     this.nextBlock = null
     this.hash = result.answer
     this.nounce = result.nounce
-    this.difficulty = difficulty
+    this.elapsed = result.elapsed
   }
 
-  // Returns an object containing the block's id information
+  // Returns an object containing the block's hash information
   getHash() {
-    return {
-      hash: this.hash,
-      previousBlock: this.previousBlock,
-      nextBlock: this.nextBlock
-    }
+    return this.hash
+  }
+
+  getId() {
+    return this.id
   }
 
   // Returns an object containing the block's data information
